@@ -1,11 +1,15 @@
 var applicationsService = require('../services/applications.service');
 
-const getFiltered = async (req, res, next) => {
-    const recommendedApplications = await applicationsService.getRecommendedApplications(req.query);
+const getFiltered = async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.status(200).json(recommendedApplications);
-
-    //TODO: add logging end errors handling
+    try {
+        const recommendedApplications = await applicationsService.getRecommendedApplications(req.query);
+        res.status(200).json(recommendedApplications);
+        console.info(`selected ${recommendedApplications.length} applications`);
+    } catch(error) {
+        res.status(500).json(error.message);
+        console.error('Failed to retrieve match applications');
+    }
 }
 
 module.exports = {

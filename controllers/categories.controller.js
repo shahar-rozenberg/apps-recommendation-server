@@ -1,11 +1,15 @@
 var categoriesService = require('../services/categories.service');
 
-const getAll = async (req, res, next) => {
-    const allCategories = await categoriesService.getAllCategories();
+const getAll = async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.status(200).json(allCategories);
-
-    //TODO: add logging end errors handling
+    try {
+        const allCategories = await categoriesService.getAllCategories();
+        res.status(200).json(allCategories);
+        console.info(`selected ${allCategories.length} categories`);
+    } catch(error) {
+        res.status(500).json(error.message);
+        console.error('Failed to retrieve categories');
+    }
 }
 
 module.exports = {
